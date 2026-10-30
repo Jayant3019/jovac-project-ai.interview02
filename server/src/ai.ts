@@ -1,8 +1,13 @@
 import { z } from 'zod'
 const st = (status: number, m: string) => Object.assign(new Error(m), { status })
 async function llmJson<T>(system: string, user: string, schema: z.ZodType<T>): Promise<T> {
-  const { AI_API_KEY, AI_MODEL = 'gpt-4o-mini', AI_BASE_URL = 'https://api.openai.com/v1' } = process.env
-  if (!AI_API_KEY) throw st(503, 'AI provider is not configured. Set AI_API_KEY on the server.')
+  const usingGemini = !process.env.AI_API_KEY && !!process.env.GEMINI_API_KEY
+  const AI_API_KEY = process.env.AI_API_KEY || process.env.GEMINI_API_KEY
+  const AI_MODEL = process.env.AI_MODEL || process.env.GEMINI_MODEL || 'gpt-4o-mini'
+  const AI_BASE_URL = process.env.AI_BASE_URL || (usingGemini
+    ? 'https://generativelanguage.googleapis.com/v1beta/openai'
+    : 'https://api.openai.com/v1')
+  if (!AI_API_KEY) throw st(503, 'AI provider is not configured. Set AI_API_KEY or GEMINI_API_KEY on the server.')
   const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 30000)
   try {
     const r = await fetch(`${AI_BASE_URL}/chat/completions`, { method: 'POST', signal: ctrl.signal,
