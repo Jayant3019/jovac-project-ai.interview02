@@ -31,7 +31,7 @@ HttpOnly login cookie works without exposing backend secrets in the frontend.
    `netlify.toml`; the build command and publish directory are configured there.
 3. In `netlify.toml`, confirm the `/api/*` proxy target matches the public URL
    of your Render service. The current target is
-   `https://jovac-project-ai-interview02-3.onrender.com`.
+   `https://jovac-project-ai-interview02-00.onrender.com`.
 4. For direct cross-origin API access (outside the Netlify proxy), set the
    Render `CLIENT_URL` variable to your Netlify site origin. The normal app
    flow uses the proxy, so no frontend API URL or CORS setup is needed.
